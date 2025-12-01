@@ -5,7 +5,7 @@ export const dictionaries = {
     "header": {
       "titleMain": "Say the Number",
       "tagline": "Розпізнавання чисел на абакусі"
-       },
+    },
     "footer": "MindWorld School © 2025",
     
     "settings": {
@@ -26,26 +26,26 @@ export const dictionaries = {
       "timeLabel": "Час показу числа",
       "timeUnit": "сек",
       "totalExamplesLabel": "Кількість прикладів",
-     "totalExamplesOptions": [
-  { "value": 1, "label": "1 приклад" },
-  { "value": 2, "label": "2 приклади" },
-  { "value": 3, "label": "3 приклади" },
-  { "value": 4, "label": "4 приклади" },
-  { "value": 5, "label": "5 прикладів" },
-  { "value": 6, "label": "6 прикладів" },
-  { "value": 7, "label": "7 прикладів" },
-  { "value": 8, "label": "8 прикладів" },
-  { "value": 9, "label": "9 прикладів" },
-  { "value": 10, "label": "10 прикладів" },
-  { "value": 15, "label": "15 прикладів" },
-  { "value": 20, "label": "20 прикладів" },
-  { "value": 25, "label": "25 прикладів" },
-  { "value": 30, "label": "30 прикладів" },
-  { "value": 35, "label": "35 прикладів" },
-  { "value": 40, "label": "40 прикладів" },
-  { "value": 45, "label": "45 прикладів" },
-  { "value": 50, "label": "50 прикладів" }
-],
+      "totalExamplesOptions": [
+        { "value": 1, "label": "1 приклад" },
+        { "value": 2, "label": "2 приклади" },
+        { "value": 3, "label": "3 приклади" },
+        { "value": 4, "label": "4 приклади" },
+        { "value": 5, "label": "5 прикладів" },
+        { "value": 6, "label": "6 прикладів" },
+        { "value": 7, "label": "7 прикладів" },
+        { "value": 8, "label": "8 прикладів" },
+        { "value": 9, "label": "9 прикладів" },
+        { "value": 10, "label": "10 прикладів" },
+        { "value": 15, "label": "15 прикладів" },
+        { "value": 20, "label": "20 прикладів" },
+        { "value": 25, "label": "25 прикладів" },
+        { "value": 30, "label": "30 прикладів" },
+        { "value": 35, "label": "35 прикладів" },
+        { "value": 40, "label": "40 прикладів" },
+        { "value": 45, "label": "45 прикладів" },
+        { "value": 50, "label": "50 прикладів" }
+      ],
       "startButton": "Почати тренування"
     },
     
@@ -62,10 +62,10 @@ export const dictionaries = {
       "score": "Рахунок",
       "correctCount": "Правильно",
       "incorrectCount": "Помилок",
-      ""exitButton": "Вийти",
-"showAgainButton": "Показати ще раз",
-"skipButton": "Пропустити",
-"watching": "Дивіться..."
+      "exitButton": "Вийти",
+      "showAgainButton": "Показати ще раз",
+      "skipButton": "Пропустити",
+      "watching": "Дивіться..."
     },
     
     "results": {
@@ -96,7 +96,7 @@ export const dictionaries = {
     "header": {
       "titleMain": "Say the Number",
       "tagline": "Number Recognition on Abacus"
-          },
+    },
     "footer": "MindWorld School © 2025",
     
     "settings": {
@@ -118,25 +118,25 @@ export const dictionaries = {
       "timeUnit": "sec",
       "totalExamplesLabel": "Number of Examples",
       "totalExamplesOptions": [
-  { "value": 1, "label": "1 example" },
-  { "value": 2, "label": "2 examples" },
-  { "value": 3, "label": "3 examples" },
-  { "value": 4, "label": "4 examples" },
-  { "value": 5, "label": "5 examples" },
-  { "value": 6, "label": "6 examples" },
-  { "value": 7, "label": "7 examples" },
-  { "value": 8, "label": "8 examples" },
-  { "value": 9, "label": "9 examples" },
-  { "value": 10, "label": "10 examples" },
-  { "value": 15, "label": "15 examples" },
-  { "value": 20, "label": "20 examples" },
-  { "value": 25, "label": "25 examples" },
-  { "value": 30, "label": "30 examples" },
-  { "value": 35, "label": "35 examples" },
-  { "value": 40, "label": "40 examples" },
-  { "value": 45, "label": "45 examples" },
-  { "value": 50, "label": "50 examples" }
-],
+        { "value": 1, "label": "1 example" },
+        { "value": 2, "label": "2 examples" },
+        { "value": 3, "label": "3 examples" },
+        { "value": 4, "label": "4 examples" },
+        { "value": 5, "label": "5 examples" },
+        { "value": 6, "label": "6 examples" },
+        { "value": 7, "label": "7 examples" },
+        { "value": 8, "label": "8 examples" },
+        { "value": 9, "label": "9 examples" },
+        { "value": 10, "label": "10 examples" },
+        { "value": 15, "label": "15 examples" },
+        { "value": 20, "label": "20 examples" },
+        { "value": 25, "label": "25 examples" },
+        { "value": 30, "label": "30 examples" },
+        { "value": 35, "label": "35 examples" },
+        { "value": 40, "label": "40 examples" },
+        { "value": 45, "label": "45 examples" },
+        { "value": 50, "label": "50 examples" }
+      ],
       "startButton": "Start Training"
     },
     
@@ -154,9 +154,9 @@ export const dictionaries = {
       "correctCount": "Correct",
       "incorrectCount": "Mistakes",
       "exitButton": "Exit",
-"showAgainButton": "Show again",
-"skipButton": "Skip",
-"watching": "Watching..."
+      "showAgainButton": "Show again",
+      "skipButton": "Skip",
+      "watching": "Watching..."
     },
     
     "results": {
@@ -187,7 +187,7 @@ export const dictionaries = {
     "header": {
       "titleMain": "Say the Number",
       "tagline": "Распознавание чисел на абакусе"
-          },
+    },
     "footer": "MindWorld School © 2025",
     
     "settings": {
@@ -208,26 +208,26 @@ export const dictionaries = {
       "timeLabel": "Время показа числа",
       "timeUnit": "сек",
       "totalExamplesLabel": "Количество примеров",
-     "totalExamplesOptions": [
-  { "value": 1, "label": "1 пример" },
-  { "value": 2, "label": "2 примера" },
-  { "value": 3, "label": "3 примера" },
-  { "value": 4, "label": "4 примера" },
-  { "value": 5, "label": "5 примеров" },
-  { "value": 6, "label": "6 примеров" },
-  { "value": 7, "label": "7 примеров" },
-  { "value": 8, "label": "8 примеров" },
-  { "value": 9, "label": "9 примеров" },
-  { "value": 10, "label": "10 примеров" },
-  { "value": 15, "label": "15 примеров" },
-  { "value": 20, "label": "20 примеров" },
-  { "value": 25, "label": "25 примеров" },
-  { "value": 30, "label": "30 примеров" },
-  { "value": 35, "label": "35 примеров" },
-  { "value": 40, "label": "40 примеров" },
-  { "value": 45, "label": "45 примеров" },
-  { "value": 50, "label": "50 примеров" }
-],
+      "totalExamplesOptions": [
+        { "value": 1, "label": "1 пример" },
+        { "value": 2, "label": "2 примера" },
+        { "value": 3, "label": "3 примера" },
+        { "value": 4, "label": "4 примера" },
+        { "value": 5, "label": "5 примеров" },
+        { "value": 6, "label": "6 примеров" },
+        { "value": 7, "label": "7 примеров" },
+        { "value": 8, "label": "8 примеров" },
+        { "value": 9, "label": "9 примеров" },
+        { "value": 10, "label": "10 примеров" },
+        { "value": 15, "label": "15 примеров" },
+        { "value": 20, "label": "20 примеров" },
+        { "value": 25, "label": "25 примеров" },
+        { "value": 30, "label": "30 примеров" },
+        { "value": 35, "label": "35 примеров" },
+        { "value": 40, "label": "40 примеров" },
+        { "value": 45, "label": "45 примеров" },
+        { "value": 50, "label": "50 примеров" }
+      ],
       "startButton": "Начать тренировку"
     },
     
@@ -244,10 +244,10 @@ export const dictionaries = {
       "score": "Счёт",
       "correctCount": "Правильно",
       "incorrectCount": "Ошибок",
-     "exitButton": "Выйти",
-"showAgainButton": "Показать ещё раз",
-"skipButton": "Пропустить",
-"watching": "Смотрите..."
+      "exitButton": "Выйти",
+      "showAgainButton": "Показать ещё раз",
+      "skipButton": "Пропустить",
+      "watching": "Смотрите..."
     },
     
     "results": {
@@ -278,7 +278,7 @@ export const dictionaries = {
     "header": {
       "titleMain": "Say the Number",
       "tagline": "Reconocimiento de números en el ábaco"
-          },
+    },
     "footer": "MindWorld School © 2025",
     
     "settings": {
@@ -300,25 +300,25 @@ export const dictionaries = {
       "timeUnit": "seg",
       "totalExamplesLabel": "Número de ejemplos",
       "totalExamplesOptions": [
-  { "value": 1, "label": "1 ejemplo" },
-  { "value": 2, "label": "2 ejemplos" },
-  { "value": 3, "label": "3 ejemplos" },
-  { "value": 4, "label": "4 ejemplos" },
-  { "value": 5, "label": "5 ejemplos" },
-  { "value": 6, "label": "6 ejemplos" },
-  { "value": 7, "label": "7 ejemplos" },
-  { "value": 8, "label": "8 ejemplos" },
-  { "value": 9, "label": "9 ejemplos" },
-  { "value": 10, "label": "10 ejemplos" },
-  { "value": 15, "label": "15 ejemplos" },
-  { "value": 20, "label": "20 ejemplos" },
-  { "value": 25, "label": "25 ejemplos" },
-  { "value": 30, "label": "30 ejemplos" },
-  { "value": 35, "label": "35 ejemplos" },
-  { "value": 40, "label": "40 ejemplos" },
-  { "value": 45, "label": "45 ejemplos" },
-  { "value": 50, "label": "50 ejemplos" }
-],
+        { "value": 1, "label": "1 ejemplo" },
+        { "value": 2, "label": "2 ejemplos" },
+        { "value": 3, "label": "3 ejemplos" },
+        { "value": 4, "label": "4 ejemplos" },
+        { "value": 5, "label": "5 ejemplos" },
+        { "value": 6, "label": "6 ejemplos" },
+        { "value": 7, "label": "7 ejemplos" },
+        { "value": 8, "label": "8 ejemplos" },
+        { "value": 9, "label": "9 ejemplos" },
+        { "value": 10, "label": "10 ejemplos" },
+        { "value": 15, "label": "15 ejemplos" },
+        { "value": 20, "label": "20 ejemplos" },
+        { "value": 25, "label": "25 ejemplos" },
+        { "value": 30, "label": "30 ejemplos" },
+        { "value": 35, "label": "35 ejemplos" },
+        { "value": 40, "label": "40 ejemplos" },
+        { "value": 45, "label": "45 ejemplos" },
+        { "value": 50, "label": "50 ejemplos" }
+      ],
       "startButton": "Comenzar entrenamiento"
     },
     
@@ -336,9 +336,9 @@ export const dictionaries = {
       "correctCount": "Correctos",
       "incorrectCount": "Errores",
       "exitButton": "Salir",
-"showAgainButton": "Mostrar de nuevo",
-"skipButton": "Omitir",
-"watching": "Mirando..."
+      "showAgainButton": "Mostrar de nuevo",
+      "skipButton": "Omitir",
+      "watching": "Mirando..."
     },
     
     "results": {
