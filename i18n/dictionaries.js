@@ -61,7 +61,11 @@ export const dictionaries = {
       "progress": "Приклад {current} з {total}",
       "score": "Рахунок",
       "correctCount": "Правильно",
-      "incorrectCount": "Помилок"
+      "incorrectCount": "Помилок",
+      "exitButton": "Вийти",
+"showAgainButton": "Показати ще раз",
+"continueButton": "Далі",
+"skipButton": "Пропустити"
     },
     
     "results": {
@@ -148,7 +152,11 @@ export const dictionaries = {
       "progress": "Example {current} of {total}",
       "score": "Score",
       "correctCount": "Correct",
-      "incorrectCount": "Mistakes"
+      "incorrectCount": "Mistakes",
+      "exitButton": "Exit",
+"showAgainButton": "Show again",
+"continueButton": "Continue",
+"skipButton": "Skip"
     },
     
     "results": {
@@ -235,7 +243,11 @@ export const dictionaries = {
       "progress": "Пример {current} из {total}",
       "score": "Счёт",
       "correctCount": "Правильно",
-      "incorrectCount": "Ошибок"
+      "incorrectCount": "Ошибок",
+      "exitButton": "Выйти",
+"showAgainButton": "Показать ещё раз",
+"continueButton": "Далее",
+"skipButton": "Пропустить"
     },
     
     "results": {
@@ -322,7 +334,11 @@ export const dictionaries = {
       "progress": "Ejemplo {current} de {total}",
       "score": "Puntuación",
       "correctCount": "Correctos",
-      "incorrectCount": "Errores"
+      "incorrectCount": "Errores",
+      "exitButton": "Salir",
+"showAgainButton": "Mostrar de nuevo",
+"continueButton": "Continuar",
+"skipButton": "Omitir"
     },
     
     "results": {
