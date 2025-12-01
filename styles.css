@@ -370,67 +370,10 @@ body {
   justify-content: center;
   align-items: center;
   padding: 2rem;
-  min-height: 300px;
+  min-height: 350px;
 }
 
-.abacus {
-  display: flex;
-  gap: 0.5rem;
-  padding: 1.5rem;
-  background: linear-gradient(135deg, #8b4513 0%, #654321 100%);
-  border-radius: var(--radius);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-}
-
-.abacus__column {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.5rem;
-  position: relative;
-}
-
-.abacus__rod {
-  width: 4px;
-  height: 200px;
-  background: linear-gradient(to bottom, #666, #333);
-  border-radius: 2px;
-  position: relative;
-}
-
-.abacus__divider {
-  position: absolute;
-  top: 40%;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 120%;
-  height: 3px;
-  background: #d4af37;
-  border-radius: 2px;
-}
-
-.abacus__bead {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #f9d71c 0%, #f4a742 100%);
-  border: 2px solid #d4af37;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
-}
-
-.abacus__bead--upper {
-  width: 22px;
-  height: 22px;
-}
-
-.abacus__bead--active {
-  background: linear-gradient(135deg, #ff6b6b 0%, #c92a2a 100%);
-  border-color: #a61e1e;
-}
+/* SVG абакус не требует дополнительных стилей - все в компоненте */
 
 /* ==========================================
    ИГРОВАЯ ЗОНА
@@ -676,9 +619,9 @@ body {
     font-size: 1.5rem;
   }
 
-  .abacus {
-    gap: 0.25rem;
+  .abacus-container {
     padding: 1rem;
+    min-height: 300px;
   }
 
   .game-status {
