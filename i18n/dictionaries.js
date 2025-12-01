@@ -1,7 +1,7 @@
 // Dictionaries for Number Recognition Trainer
 export const dictionaries = {
   "ua": {
-    "language": "Українська",
+    "language": "UA",
     "header": {
       "titleMain": "Say the Number",
       "tagline": "Розпізнавання чисел на абакусі"
@@ -88,7 +88,7 @@ export const dictionaries = {
   },
 
   "en": {
-    "language": "English",
+    "language": "EN",
     "header": {
       "titleMain": "Say the Number",
       "tagline": "Number Recognition on Abacus"
@@ -175,7 +175,7 @@ export const dictionaries = {
   },
 
   "ru": {
-    "language": "Русский",
+    "language": "RU",
     "header": {
       "titleMain": "Say the Number",
       "tagline": "Распознавание чисел на абакусе"
@@ -262,7 +262,7 @@ export const dictionaries = {
   },
 
   "es": {
-    "language": "Español",
+    "language": "ES",
     "header": {
       "titleMain": "Say the Number",
       "tagline": "Reconocimiento de números en el ábaco"
