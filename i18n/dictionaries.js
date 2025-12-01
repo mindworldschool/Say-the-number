@@ -4,7 +4,8 @@ export const dictionaries = {
     "language": "Українська",
     "header": {
       "titleMain": "Mind Abacus",
-      "tagline": "Розпізнавання чисел на абакусі"
+      "tagline": "Розпізнавання чисел на абакусі",
+      "slogan": "Думай швидко. Рахуй з розумом."
     },
     "footer": "MindWorld School © 2025",
     
@@ -78,7 +79,8 @@ export const dictionaries = {
     "language": "English",
     "header": {
       "titleMain": "Mind Abacus",
-      "tagline": "Number Recognition on Abacus"
+      "tagline": "Number Recognition on Abacus",
+      "slogan": "Think fast. Count with mind."
     },
     "footer": "MindWorld School © 2025",
     
@@ -152,7 +154,8 @@ export const dictionaries = {
     "language": "Русский",
     "header": {
       "titleMain": "Mind Abacus",
-      "tagline": "Распознавание чисел на абакусе"
+      "tagline": "Распознавание чисел на абакусе",
+      "slogan": "Думай быстро. Считай с умом."
     },
     "footer": "MindWorld School © 2025",
     
@@ -226,7 +229,8 @@ export const dictionaries = {
     "language": "Español",
     "header": {
       "titleMain": "Mind Abacus",
-      "tagline": "Reconocimiento de números en el ábaco"
+      "tagline": "Reconocimiento de números en el ábaco",
+      "slogan": "Piensa rápido. Cuenta con la mente."
     },
     "footer": "MindWorld School © 2025",
     
