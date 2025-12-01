@@ -122,10 +122,12 @@ function initLanguageSwitcher() {
     // Update header text
     const title = document.getElementById('appTitle');
     const tagline = document.getElementById('appTagline');
+    const slogan = document.getElementById('appSlogan');
     const footer = document.getElementById('appFooter');
 
     if (title) title.textContent = t('header.titleMain');
     if (tagline) tagline.textContent = t('header.tagline');
+    if (slogan) slogan.textContent = t('header.slogan');
     if (footer) footer.textContent = t('footer');
 
     // Re-render current screen
@@ -149,10 +151,12 @@ async function init() {
     // Update header text
     const title = document.getElementById('appTitle');
     const tagline = document.getElementById('appTagline');
+    const slogan = document.getElementById('appSlogan');
     const footer = document.getElementById('appFooter');
 
     if (title) title.textContent = t('header.titleMain');
     if (tagline) tagline.textContent = t('header.tagline');
+    if (slogan) slogan.textContent = t('header.slogan');
     if (footer) footer.textContent = t('footer');
 
     // Initialize language switcher
