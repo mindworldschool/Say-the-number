@@ -3,10 +3,9 @@ export const dictionaries = {
   "ua": {
     "language": "Українська",
     "header": {
-      "titleMain": "Mind Abacus",
-      "tagline": "Розпізнавання чисел на абакусі",
-      "slogan": "Думай швидко. Рахуй з розумом."
-    },
+      "titleMain": "Say the Number",
+      "tagline": "Розпізнавання чисел на абакусі"
+       },
     "footer": "MindWorld School © 2025",
     
     "settings": {
@@ -91,10 +90,9 @@ export const dictionaries = {
   "en": {
     "language": "English",
     "header": {
-      "titleMain": "Mind Abacus",
-      "tagline": "Number Recognition on Abacus",
-      "slogan": "Think fast. Count with mind."
-    },
+      "titleMain": "Say the Number",
+      "tagline": "Number Recognition on Abacus"
+          },
     "footer": "MindWorld School © 2025",
     
     "settings": {
@@ -179,10 +177,9 @@ export const dictionaries = {
   "ru": {
     "language": "Русский",
     "header": {
-      "titleMain": "Mind Abacus",
-      "tagline": "Распознавание чисел на абакусе",
-      "slogan": "Думай быстро. Считай с умом."
-    },
+      "titleMain": "Say the Number",
+      "tagline": "Распознавание чисел на абакусе"
+          },
     "footer": "MindWorld School © 2025",
     
     "settings": {
@@ -267,10 +264,9 @@ export const dictionaries = {
   "es": {
     "language": "Español",
     "header": {
-      "titleMain": "Mind Abacus",
-      "tagline": "Reconocimiento de números en el ábaco",
-      "slogan": "Piensa rápido. Cuenta con la mente."
-    },
+      "titleMain": "Say the Number",
+      "tagline": "Reconocimiento de números en el ábaco"
+          },
     "footer": "MindWorld School © 2025",
     
     "settings": {
