@@ -71,10 +71,6 @@ export function renderGame(container, context) {
   inputZone.className = 'game-input-zone';
   inputZone.style.display = 'none';
   
-  const inputLabel = document.createElement('label');
-  inputLabel.className = 'form-group__label';
-  inputLabel.textContent = t('game.answerPrompt');
-  
   const input = document.createElement('input');
   input.type = 'number';
   input.className = 'form-group__input';
@@ -85,14 +81,30 @@ export function renderGame(container, context) {
   submitBtn.textContent = t('game.submitButton');
   submitBtn.addEventListener('click', handleSubmit);
   
-  inputZone.append(inputLabel, input, submitBtn);
+  // Ответ по Enter
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      handleSubmit();
+    }
+  });
+  
+  inputZone.append(input, submitBtn);
   
   // Feedback area
   const feedbackArea = document.createElement('div');
   feedbackArea.className = 'feedback';
   feedbackArea.style.display = 'none';
   
-  gameZone.append(messageArea, abacusContainer, inputZone, feedbackArea);
+  // Кнопка выхода
+  const exitBtn = document.createElement('button');
+  exitBtn.className = 'btn btn--secondary btn--exit';
+  exitBtn.textContent = t('game.exitButton');
+  exitBtn.addEventListener('click', () => {
+    if (phaseTimeout) clearTimeout(phaseTimeout);
+    navigate('settings');
+  });
+  
+  gameZone.append(messageArea, abacusContainer, inputZone, feedbackArea, exitBtn);
   screen.append(statusBar, gameZone);
   container.appendChild(screen);
   
@@ -110,6 +122,7 @@ export function renderGame(container, context) {
     // Reset UI
     input.value = '';
     feedbackArea.style.display = 'none';
+    feedbackArea.innerHTML = '';
     inputZone.style.display = 'none';
     abacusContainer.style.display = 'none';
     
@@ -208,38 +221,83 @@ export function renderGame(container, context) {
 
     // Show feedback
     feedbackArea.style.display = 'block';
-
-    if (isCorrect) {
-      feedbackArea.className = 'feedback feedback--correct';
-      feedbackArea.textContent = t('game.correct');
-      // Play correct sound
-      playSound('correct');
-    } else {
-      feedbackArea.className = 'feedback feedback--incorrect';
-      feedbackArea.innerHTML = `
-        ${t('game.incorrect')}<br>
-        ${t('game.correctWas')} <strong>${correctNumber}</strong>
-      `;
-      // Play wrong sound
-      playSound('wrong');
-    }
+    feedbackArea.innerHTML = ''; // Очистить
 
     // Update status bar
     updateStatusBar(statusBar, t, state);
 
-    // Wait 2 seconds before next round
-    phaseTimeout = setTimeout(() => {
-      // Check if game is finished
-      if (isGameFinished()) {
-        endGame();
-        logger.info(CONTEXT, 'Game finished');
-        navigate('results');
-      } else {
-        // Play next sound before starting new round
-        playSound('next');
-        startRound();
-      }
-    }, 2000);
+    if (isCorrect) {
+      feedbackArea.className = 'feedback feedback--correct';
+      feedbackArea.textContent = t('game.correct');
+      playSound('correct');
+      
+      // Автопереход через 2 сек
+      phaseTimeout = setTimeout(() => {
+        nextRoundOrFinish();
+      }, 2000);
+    } else {
+      feedbackArea.className = 'feedback feedback--incorrect';
+      
+      // Текст с правильным ответом
+      const feedbackText = document.createElement('div');
+      feedbackText.className = 'feedback__text';
+      feedbackText.innerHTML = `${t('game.incorrect')}<br>${t('game.correctWas')} <strong>${correctNumber}</strong>`;
+      
+      // Контейнер для кнопок
+      const buttonsContainer = document.createElement('div');
+      buttonsContainer.className = 'feedback__buttons';
+      
+      // Кнопка "Показать снова"
+      const showAgainBtn = document.createElement('button');
+      showAgainBtn.className = 'btn btn--secondary btn--show-again';
+      showAgainBtn.textContent = t('game.showAgainButton');
+      showAgainBtn.addEventListener('click', () => {
+        // Показать абакус с правильным числом
+        abacusContainer.style.display = 'flex';
+        abacusInstance.setValue(correctNumber);
+        showAgainBtn.style.display = 'none';
+        
+        // Показать кнопку "Далее"
+        continueBtn.style.display = 'inline-block';
+      });
+      
+      // Кнопка "Далее" (скрыта изначально)
+      const continueBtn = document.createElement('button');
+      continueBtn.className = 'btn btn--primary btn--continue';
+      continueBtn.textContent = t('game.continueButton');
+      continueBtn.style.display = 'none';
+      continueBtn.addEventListener('click', () => {
+        abacusContainer.style.display = 'none';
+        nextRoundOrFinish();
+      });
+      
+      // Кнопка "Пропустить" (сразу перейти дальше)
+      const skipBtn = document.createElement('button');
+      skipBtn.className = 'btn btn--text btn--skip';
+      skipBtn.textContent = t('game.skipButton');
+      skipBtn.addEventListener('click', () => {
+        nextRoundOrFinish();
+      });
+      
+      buttonsContainer.append(showAgainBtn, continueBtn, skipBtn);
+      feedbackArea.append(feedbackText, buttonsContainer);
+      
+      playSound('wrong');
+    }
+  }
+  
+  function nextRoundOrFinish() {
+    // Скрыть абакус если был показан
+    abacusContainer.style.display = 'none';
+    
+    if (isGameFinished()) {
+      endGame();
+      logger.info(CONTEXT, 'Game finished');
+      navigate('results');
+    } else {
+      playSound('next');
+      startRound();
+    }
   }
   
   // Cleanup function
