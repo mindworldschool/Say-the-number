@@ -5,6 +5,7 @@
 
 import { logger } from '../core/logger.js';
 import { getGameResults } from '../core/state.js';
+import { playSound } from '../utils/soundManager.js';
 
 const CONTEXT = 'ResultsScreen';
 
@@ -16,13 +17,18 @@ const CONTEXT = 'ResultsScreen';
  */
 export function renderResults(container, context) {
   const { t, state, navigate } = context;
-  
+
   logger.info(CONTEXT, 'Rendering results screen');
-  
+
   // Get results
   const results = getGameResults();
-  
+
   logger.debug(CONTEXT, 'Results:', results);
+
+  // Play fanfare sound for good results
+  if (results.accuracy >= 50) {
+    playSound('fanfare');
+  }
   
   const screen = document.createElement('div');
   screen.className = 'screen';
