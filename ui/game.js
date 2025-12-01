@@ -45,6 +45,7 @@ export function renderGame(container, context) {
   let currentPhase = PHASES.PREPARE;
   let abacusInstance = null;
   let phaseTimeout = null;
+  let showAgainTimeout = null;
   
   // Create screen
   const screen = document.createElement('div');
@@ -97,10 +98,11 @@ export function renderGame(container, context) {
   
   // Кнопка выхода
   const exitBtn = document.createElement('button');
-  exitBtn.className = 'btn btn--secondary btn--exit';
+  exitBtn.className = 'btn btn--exit';
   exitBtn.textContent = t('game.exitButton');
   exitBtn.addEventListener('click', () => {
     if (phaseTimeout) clearTimeout(phaseTimeout);
+    if (showAgainTimeout) clearTimeout(showAgainTimeout);
     navigate('settings');
   });
   
@@ -182,7 +184,7 @@ export function renderGame(container, context) {
     // Show input
     messageArea.textContent = t('game.answerPrompt');
     messageArea.className = 'game-message';
-    inputZone.style.display = 'block';
+    inputZone.style.display = 'flex';
     
     // Focus input
     input.focus();
@@ -221,7 +223,7 @@ export function renderGame(container, context) {
 
     // Show feedback
     feedbackArea.style.display = 'block';
-    feedbackArea.innerHTML = ''; // Очистить
+    feedbackArea.innerHTML = '';
 
     // Update status bar
     updateStatusBar(statusBar, t, state);
@@ -249,37 +251,35 @@ export function renderGame(container, context) {
       
       // Кнопка "Показать снова"
       const showAgainBtn = document.createElement('button');
-      showAgainBtn.className = 'btn btn--secondary btn--show-again';
+      showAgainBtn.className = 'btn btn--primary btn--show-again';
       showAgainBtn.textContent = t('game.showAgainButton');
       showAgainBtn.addEventListener('click', () => {
         // Показать абакус с правильным числом
         abacusContainer.style.display = 'flex';
         abacusInstance.setValue(correctNumber);
-        showAgainBtn.style.display = 'none';
+        showAgainBtn.disabled = true;
+        showAgainBtn.textContent = t('game.watching');
         
-        // Показать кнопку "Далее"
-        continueBtn.style.display = 'inline-block';
-      });
-      
-      // Кнопка "Далее" (скрыта изначально)
-      const continueBtn = document.createElement('button');
-      continueBtn.className = 'btn btn--primary btn--continue';
-      continueBtn.textContent = t('game.continueButton');
-      continueBtn.style.display = 'none';
-      continueBtn.addEventListener('click', () => {
-        abacusContainer.style.display = 'none';
-        nextRoundOrFinish();
+        // Скрыть через заданное время
+        const displayTime = state.settings.displayTime * 1000;
+        showAgainTimeout = setTimeout(() => {
+          abacusContainer.style.display = 'none';
+          showAgainBtn.disabled = false;
+          showAgainBtn.textContent = t('game.showAgainButton');
+        }, displayTime);
       });
       
       // Кнопка "Пропустить" (сразу перейти дальше)
       const skipBtn = document.createElement('button');
-      skipBtn.className = 'btn btn--text btn--skip';
+      skipBtn.className = 'btn btn--skip';
       skipBtn.textContent = t('game.skipButton');
       skipBtn.addEventListener('click', () => {
+        if (showAgainTimeout) clearTimeout(showAgainTimeout);
+        abacusContainer.style.display = 'none';
         nextRoundOrFinish();
       });
       
-      buttonsContainer.append(showAgainBtn, continueBtn, skipBtn);
+      buttonsContainer.append(showAgainBtn, skipBtn);
       feedbackArea.append(feedbackText, buttonsContainer);
       
       playSound('wrong');
@@ -306,6 +306,10 @@ export function renderGame(container, context) {
     
     if (phaseTimeout) {
       clearTimeout(phaseTimeout);
+    }
+    
+    if (showAgainTimeout) {
+      clearTimeout(showAgainTimeout);
     }
     
     if (abacusInstance) {
