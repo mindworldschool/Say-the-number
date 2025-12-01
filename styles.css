@@ -29,7 +29,7 @@ body {
   font-family: "Montserrat", -apple-system, BlinkMacSystemFont, "Segoe UI",
     sans-serif;
   color: var(--text-primary);
-  background: #fef8f0 (135deg, #667eea 0%, #764ba2 100%);
+  background: #fef8f0;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -85,39 +85,46 @@ body {
   margin: 0.25rem 0 0 0;
 }
 
-/* Right side of header - slogan and language switcher */
+/* Right side of header */
 .app-header__right {
   display: flex;
   align-items: center;
 }
 
-/* Языковой переключатель */
+/* Языковой переключатель - капсула */
 .app-header__languages {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  background: var(--primary);
+  background: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.4);
   border-radius: 50px;
   padding: 4px;
-  gap: 4px;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  gap: 0;
 }
 
 .language-btn {
   background: transparent;
   border: none;
   color: rgba(255, 255, 255, 0.9);
-  font-size: 0.875rem;
+  font-size: 0.85rem;
   font-weight: 600;
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 1.2rem;
   border-radius: 50px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.25s ease;
   text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.language-btn:hover {
+  color: white;
+  background: rgba(255, 255, 255, 0.15);
 }
 
 .language-btn--active {
   background: var(--bg-white) !important;
   color: var(--primary) !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 }
 
 /* ==========================================
@@ -323,12 +330,14 @@ body {
 }
 
 .btn--secondary {
-  background: var(--secondary);
-  color: var(--bg-white);
+  background: transparent;
+  color: var(--primary);
+  border: 2px solid var(--primary);
 }
 
 .btn--secondary:hover {
-  background: #3a7bc8;
+  background: var(--primary);
+  color: var(--bg-white);
   transform: translateY(-2px);
 }
 
@@ -354,8 +363,6 @@ body {
   padding: 2rem;
   min-height: 350px;
 }
-
-/* SVG абакус не требует дополнительных стилей - все в компоненте */
 
 /* ==========================================
    ИГРОВАЯ ЗОНА
@@ -425,13 +432,24 @@ body {
   }
 }
 
+/* Зона ввода ответа */
 .game-input-zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
   margin: 2rem 0;
 }
 
+.game-input-zone .form-group__input {
+  width: 100%;
+  max-width: 400px;
+}
+
+/* Feedback */
 .feedback {
   margin: 1rem 0;
-  padding: 1rem;
+  padding: 1.5rem;
   border-radius: var(--radius);
   font-size: 1.2rem;
   font-weight: 600;
@@ -445,6 +463,56 @@ body {
 .feedback--incorrect {
   background: rgba(244, 67, 54, 0.1);
   color: var(--error);
+}
+
+.feedback__text {
+  margin-bottom: 1rem;
+}
+
+.feedback__buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+/* Кнопка "Показать снова" */
+.btn--show-again {
+  min-width: 180px;
+}
+
+/* Кнопка "Далее" */
+.btn--continue {
+  min-width: 180px;
+}
+
+/* Кнопка "Пропустить" */
+.btn--skip {
+  background: transparent;
+  color: var(--primary);
+  border: none;
+  font-size: 0.95rem;
+  text-decoration: underline;
+  padding: 0.5rem 1rem;
+}
+
+.btn--skip:hover {
+  color: var(--primary-hover);
+}
+
+/* Кнопка выхода */
+.btn--exit {
+  margin-top: 2rem;
+  background: transparent;
+  color: var(--primary);
+  border: 2px solid var(--primary);
+}
+
+.btn--exit:hover {
+  background: var(--primary);
+  color: var(--bg-white);
 }
 
 /* ==========================================
@@ -557,7 +625,7 @@ body {
 }
 
 .toast--info {
-  border-left: 4px solid var(--secondary);
+  border-left: 4px solid var(--primary);
 }
 
 /* ==========================================
@@ -584,11 +652,6 @@ body {
     align-items: center;
   }
 
-  .app-header__slogan {
-    text-align: center;
-    font-size: 0.95rem;
-  }
-
   .app-main {
     padding: 1rem;
   }
@@ -611,6 +674,10 @@ body {
     gap: 1rem;
   }
 
+  .feedback__buttons {
+    flex-direction: column;
+  }
+
   .results-grid {
     grid-template-columns: 1fr;
   }
@@ -623,58 +690,4 @@ body {
   .toast {
     min-width: auto;
   }
-/* Кнопка выхода */
-.btn--exit {
-  margin-top: 2rem;
-  background: transparent;
-  color: var(--text-secondary);
-  border: 1px solid var(--border);
 }
-
-.btn--exit:hover {
-  background: var(--bg-light);
-  color: var(--text-primary);
-}
-
-/* Feedback кнопки */
-.feedback__text {
-  margin-bottom: 1rem;
-}
-
-.feedback__buttons {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.75rem;
-  margin-top: 1rem;
-}
-
-.btn--show-again {
-  min-width: 200px;
-}
-
-.btn--continue {
-  min-width: 200px;
-}
-
-.btn--skip {
-  background: transparent;
-  color: var(--text-secondary);
-  border: none;
-  font-size: 0.9rem;
-  text-decoration: underline;
-  padding: 0.5rem;
-}
-
-.btn--skip:hover {
-  color: var(--text-primary);
-}
-
-/* Отступ для кнопки ответить */
-.game-input-zone .btn--primary {
-  margin-top: 1.5rem;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-}
-   }
