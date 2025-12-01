@@ -62,10 +62,10 @@ export const dictionaries = {
       "score": "Рахунок",
       "correctCount": "Правильно",
       "incorrectCount": "Помилок",
-      "exitButton": "Вийти",
+      ""exitButton": "Вийти",
 "showAgainButton": "Показати ще раз",
-"continueButton": "Далі",
-"skipButton": "Пропустити"
+"skipButton": "Пропустити",
+"watching": "Дивіться..."
     },
     
     "results": {
@@ -155,8 +155,8 @@ export const dictionaries = {
       "incorrectCount": "Mistakes",
       "exitButton": "Exit",
 "showAgainButton": "Show again",
-"continueButton": "Continue",
-"skipButton": "Skip"
+"skipButton": "Skip",
+"watching": "Watching..."
     },
     
     "results": {
@@ -244,10 +244,10 @@ export const dictionaries = {
       "score": "Счёт",
       "correctCount": "Правильно",
       "incorrectCount": "Ошибок",
-      "exitButton": "Выйти",
+     "exitButton": "Выйти",
 "showAgainButton": "Показать ещё раз",
-"continueButton": "Далее",
-"skipButton": "Пропустить"
+"skipButton": "Пропустить",
+"watching": "Смотрите..."
     },
     
     "results": {
@@ -337,8 +337,8 @@ export const dictionaries = {
       "incorrectCount": "Errores",
       "exitButton": "Salir",
 "showAgainButton": "Mostrar de nuevo",
-"continueButton": "Continuar",
-"skipButton": "Omitir"
+"skipButton": "Omitir",
+"watching": "Mirando..."
     },
     
     "results": {
