@@ -91,14 +91,6 @@ body {
   align-items: center;
 }
 
-.app-header__slogan {
-  font-size: 1.1rem;
-  color: rgba(255, 255, 255, 0.95);
-  font-weight: 500;
-  text-align: right;
-  line-height: 1.4;
-}
-
 /* Языковой переключатель */
 .app-header__languages {
   display: flex;
