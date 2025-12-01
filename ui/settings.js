@@ -144,7 +144,7 @@ function createTimeSlider(t, currentValue) {
   slider.type = 'range';
   slider.className = 'slider';
   slider.min = '0.1';
-  slider.max = '3.0';
+  slider.max = '5.0';
   slider.step = '0.1';
   slider.value = currentValue;
   
