@@ -4,17 +4,18 @@
  */
 
 import { logger } from '../core/logger.js';
-import { 
-  startGame, 
-  setCurrentNumber, 
-  recordAnswer, 
+import {
+  startGame,
+  setCurrentNumber,
+  recordAnswer,
   isGameFinished,
-  endGame 
+  endGame
 } from '../core/state.js';
 import { Abacus } from '../components/Abacus.js';
 import { generateRandomNumber } from '../utils/numberGenerator.js';
 import { validateAnswer } from '../utils/validation.js';
 import toast from '../components/Toast.js';
+import { playSound } from '../utils/soundManager.js';
 
 const CONTEXT = 'GameScreen';
 
@@ -120,9 +121,12 @@ export function renderGame(container, context) {
     currentPhase = PHASES.PREPARE;
     messageArea.textContent = t('game.prepare');
     messageArea.className = 'game-message game-message--prepare';
-    
+
     logger.debug(CONTEXT, 'Prepare phase');
-    
+
+    // Play tick sound
+    playSound('tick');
+
     // Wait 2 seconds before display
     phaseTimeout = setTimeout(() => {
       runDisplayPhase();
@@ -198,27 +202,31 @@ export function renderGame(container, context) {
   
   function runFeedbackPhase(isCorrect, correctNumber) {
     currentPhase = PHASES.FEEDBACK;
-    
+
     // Hide input
     inputZone.style.display = 'none';
-    
+
     // Show feedback
     feedbackArea.style.display = 'block';
-    
+
     if (isCorrect) {
       feedbackArea.className = 'feedback feedback--correct';
       feedbackArea.textContent = t('game.correct');
+      // Play correct sound
+      playSound('correct');
     } else {
       feedbackArea.className = 'feedback feedback--incorrect';
       feedbackArea.innerHTML = `
         ${t('game.incorrect')}<br>
         ${t('game.correctWas')} <strong>${correctNumber}</strong>
       `;
+      // Play wrong sound
+      playSound('wrong');
     }
-    
+
     // Update status bar
     updateStatusBar(statusBar, t, state);
-    
+
     // Wait 2 seconds before next round
     phaseTimeout = setTimeout(() => {
       // Check if game is finished
@@ -227,6 +235,8 @@ export function renderGame(container, context) {
         logger.info(CONTEXT, 'Game finished');
         navigate('results');
       } else {
+        // Play next sound before starting new round
+        playSound('next');
         startRound();
       }
     }, 2000);
