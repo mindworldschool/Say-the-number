@@ -1,7 +1,5 @@
 import { dictionaries, LANG_CODES } from "../i18n/dictionaries.js";
 
-import { dictionaries, LANG_CODES } from "../i18n/dictionaries.js";
-
 // Определяем язык один раз при загрузке страницы
 let currentLanguage = (function detectInitialLanguage() {
   let lang = "";
