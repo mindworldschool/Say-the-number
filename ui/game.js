@@ -108,14 +108,17 @@ export function renderGame(container, context) {
   
   function startRound() {
     logger.debug(CONTEXT, `Starting round ${state.gameState.currentExample + 1}`);
-    
+
+    // Reset series index for new round
+    currentSeriesIndex = 0;
+
     // Reset UI
-    input.value = '';
     feedbackArea.style.display = 'none';
     feedbackArea.innerHTML = '';
     inputZone.style.display = 'none';
+    inputZone.innerHTML = '';
     abacusContainer.style.display = 'none';
-    
+
     // Start with prepare phase
     runPreparePhase();
   }
@@ -535,9 +538,6 @@ export function renderGame(container, context) {
   function nextRoundOrFinish() {
     // Скрыть абакус если был показан
     abacusContainer.style.display = 'none';
-
-    // Reset series index for next round
-    currentSeriesIndex = 0;
 
     if (isGameFinished()) {
       endGame();
