@@ -39,17 +39,23 @@ export function renderSettings(container, context) {
   // Content
   const content = document.createElement('div');
   content.className = 'screen__content';
-  
+
   // Digits selector
   const digitsGroup = createDigitsSelector(t, state.settings.digits);
-  
+
   // Display time slider
   const timeGroup = createTimeSlider(t, state.settings.displayTime);
-  
+
+  // Series count selector
+  const seriesGroup = createSeriesCountSelector(t, state.settings.seriesCount);
+
+  // Number ranges checkboxes
+  const rangesGroup = createNumberRangesGroup(t, state.settings.numberRanges);
+
   // Total examples selector
   const examplesGroup = createExamplesSelector(t, state.settings.totalExamples);
-  
-  content.append(digitsGroup, timeGroup, examplesGroup);
+
+  content.append(digitsGroup, timeGroup, seriesGroup, rangesGroup, examplesGroup);
   
   // Footer
   const footer = document.createElement('div');
@@ -70,13 +76,31 @@ export function renderSettings(container, context) {
     // Get current values
     const digits = parseInt(digitsGroup.querySelector('select').value, 10);
     const displayTime = parseFloat(timeGroup.querySelector('.slider').value);
+    const seriesCount = parseInt(seriesGroup.querySelector('select').value, 10);
     const totalExamples = parseInt(examplesGroup.querySelector('select').value, 10);
-    
+
+    // Get number ranges
+    const range10_19 = rangesGroup.querySelector('input[name="range10_19"]').checked;
+    const round10_90 = rangesGroup.querySelector('input[name="round10_90"]').checked;
+    const round100_900 = rangesGroup.querySelector('input[name="round100_900"]').checked;
+
+    const numberRanges = {
+      range10_19,
+      round10_90,
+      round100_900
+    };
+
     // Update settings
-    updateSettings({ digits, displayTime, totalExamples });
-    
-    logger.info(CONTEXT, 'Starting game with settings:', { digits, displayTime, totalExamples });
-    
+    updateSettings({ digits, displayTime, seriesCount, numberRanges, totalExamples });
+
+    logger.info(CONTEXT, 'Starting game with settings:', {
+      digits,
+      displayTime,
+      seriesCount,
+      numberRanges,
+      totalExamples
+    });
+
     // Navigate to game
     navigate('game');
   }
@@ -169,14 +193,14 @@ function createTimeSlider(t, currentValue) {
 function createExamplesSelector(t, currentValue) {
   const group = document.createElement('div');
   group.className = 'form-group';
-  
+
   const label = document.createElement('label');
   label.className = 'form-group__label';
   label.textContent = t('settings.totalExamplesLabel');
-  
+
   const select = document.createElement('select');
   select.className = 'form-group__select';
-  
+
   const options = t('settings.totalExamplesOptions');
   options.forEach(option => {
     const opt = document.createElement('option');
@@ -187,7 +211,104 @@ function createExamplesSelector(t, currentValue) {
     }
     select.appendChild(opt);
   });
-  
+
   group.append(label, select);
+  return group;
+}
+
+/**
+ * Create series count selector
+ * @param {Function} t - Translation function
+ * @param {number} currentValue - Current selected value
+ * @returns {HTMLElement}
+ */
+function createSeriesCountSelector(t, currentValue) {
+  const group = document.createElement('div');
+  group.className = 'form-group';
+
+  const label = document.createElement('label');
+  label.className = 'form-group__label';
+  label.textContent = t('settings.seriesCountLabel');
+
+  const select = document.createElement('select');
+  select.className = 'form-group__select';
+
+  const options = t('settings.seriesCountOptions');
+  options.forEach(option => {
+    const opt = document.createElement('option');
+    opt.value = option.value;
+    opt.textContent = option.label;
+    if (option.value === currentValue) {
+      opt.selected = true;
+    }
+    select.appendChild(opt);
+  });
+
+  group.append(label, select);
+  return group;
+}
+
+/**
+ * Create number ranges checkboxes group
+ * @param {Function} t - Translation function
+ * @param {Object} currentRanges - Current selected ranges
+ * @returns {HTMLElement}
+ */
+function createNumberRangesGroup(t, currentRanges) {
+  const group = document.createElement('div');
+  group.className = 'form-group';
+
+  const label = document.createElement('label');
+  label.className = 'form-group__label';
+  label.textContent = t('settings.numberRangesLabel');
+
+  const checkboxesContainer = document.createElement('div');
+  checkboxesContainer.className = 'form-group__checkboxes';
+
+  // Range 10-19
+  const range10_19Wrapper = document.createElement('label');
+  range10_19Wrapper.className = 'checkbox-label';
+
+  const range10_19Input = document.createElement('input');
+  range10_19Input.type = 'checkbox';
+  range10_19Input.name = 'range10_19';
+  range10_19Input.checked = currentRanges.range10_19;
+
+  const range10_19Text = document.createElement('span');
+  range10_19Text.textContent = t('settings.range10_19Label');
+
+  range10_19Wrapper.append(range10_19Input, range10_19Text);
+
+  // Round 10-90
+  const round10_90Wrapper = document.createElement('label');
+  round10_90Wrapper.className = 'checkbox-label';
+
+  const round10_90Input = document.createElement('input');
+  round10_90Input.type = 'checkbox';
+  round10_90Input.name = 'round10_90';
+  round10_90Input.checked = currentRanges.round10_90;
+
+  const round10_90Text = document.createElement('span');
+  round10_90Text.textContent = t('settings.round10_90Label');
+
+  round10_90Wrapper.append(round10_90Input, round10_90Text);
+
+  // Round 100-900
+  const round100_900Wrapper = document.createElement('label');
+  round100_900Wrapper.className = 'checkbox-label';
+
+  const round100_900Input = document.createElement('input');
+  round100_900Input.type = 'checkbox';
+  round100_900Input.name = 'round100_900';
+  round100_900Input.checked = currentRanges.round100_900;
+
+  const round100_900Text = document.createElement('span');
+  round100_900Text.textContent = t('settings.round100_900Label');
+
+  round100_900Wrapper.append(round100_900Input, round100_900Text);
+
+  checkboxesContainer.append(range10_19Wrapper, round10_90Wrapper, round100_900Wrapper);
+  group.append(label, checkboxesContainer);
+
   return group;
 }

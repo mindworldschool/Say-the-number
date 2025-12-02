@@ -7,12 +7,14 @@ import { logger } from '../core/logger.js';
 import {
   startGame,
   setCurrentNumber,
+  setCurrentSeries,
   recordAnswer,
+  recordSeriesAnswers,
   isGameFinished,
   endGame
 } from '../core/state.js';
 import { Abacus } from '../components/Abacus.js';
-import { generateRandomNumber } from '../utils/numberGenerator.js';
+import { generateRandomNumber, generateNumberArray } from '../utils/numberGenerator.js';
 import { validateAnswer } from '../utils/validation.js';
 import toast from '../components/Toast.js';
 import { playSound } from '../utils/soundManager.js';
@@ -46,6 +48,11 @@ export function renderGame(container, context) {
   let abacusInstance = null;
   let phaseTimeout = null;
   let showAgainTimeout = null;
+
+  // Series mode state
+  const isSeriesMode = state.settings.seriesCount > 1;
+  let currentSeries = [];
+  let currentSeriesIndex = 0;
   
   // Create screen
   const screen = document.createElement('div');
@@ -71,25 +78,6 @@ export function renderGame(container, context) {
   const inputZone = document.createElement('div');
   inputZone.className = 'game-input-zone';
   inputZone.style.display = 'none';
-  
-  const input = document.createElement('input');
-  input.type = 'number';
-  input.className = 'form-group__input';
-  input.placeholder = t('game.answerPlaceholder');
-  
-  const submitBtn = document.createElement('button');
-  submitBtn.className = 'btn btn--primary';
-  submitBtn.textContent = t('game.submitButton');
-  submitBtn.addEventListener('click', handleSubmit);
-  
-  // Ответ по Enter
-  input.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') {
-      handleSubmit();
-    }
-  });
-  
-  inputZone.append(input, submitBtn);
   
   // Feedback area
   const feedbackArea = document.createElement('div');
@@ -150,69 +138,247 @@ export function renderGame(container, context) {
   
   function runDisplayPhase() {
     currentPhase = PHASES.DISPLAY;
-    
-    // Generate random number
-    const number = generateRandomNumber(state.settings.digits);
-    setCurrentNumber(number);
-    
-    logger.debug(CONTEXT, `Display phase - showing number: ${number}`);
-    
-    // Show message
-    messageArea.textContent = t('game.watch');
-    messageArea.className = 'game-message';
-    
-    // Show abacus with number
-    abacusContainer.style.display = 'flex';
-    abacusInstance.setValue(number);
-    
-    // Display for configured time
-    const displayTime = state.settings.displayTime * 1000; // Convert to ms
-    
-    phaseTimeout = setTimeout(() => {
-      runInputPhase();
-    }, displayTime);
+
+    if (isSeriesMode) {
+      // Series mode: generate series if this is the first number
+      if (currentSeriesIndex === 0) {
+        currentSeries = generateNumberArray(
+          state.settings.digits,
+          state.settings.seriesCount,
+          state.settings.numberRanges
+        );
+        setCurrentSeries(currentSeries);
+        logger.debug(CONTEXT, `Generated series:`, currentSeries);
+      }
+
+      // Show current number in series
+      const number = currentSeries[currentSeriesIndex];
+      logger.debug(CONTEXT, `Display phase - showing number ${currentSeriesIndex + 1}/${currentSeries.length}: ${number}`);
+
+      // Show message with series progress
+      messageArea.textContent = t('game.watchSeries')
+        .replace('{current}', currentSeriesIndex + 1)
+        .replace('{total}', currentSeries.length);
+      messageArea.className = 'game-message';
+
+      // Show abacus with number
+      abacusContainer.style.display = 'flex';
+      abacusInstance.setValue(number);
+
+      // Display for configured time
+      const displayTime = state.settings.displayTime * 1000;
+
+      phaseTimeout = setTimeout(() => {
+        currentSeriesIndex++;
+
+        // If more numbers in series, show next one
+        if (currentSeriesIndex < currentSeries.length) {
+          // Hide abacus briefly between numbers
+          abacusContainer.style.display = 'none';
+          phaseTimeout = setTimeout(() => {
+            runDisplayPhase();
+          }, 500); // 0.5s pause between numbers
+        } else {
+          // Series complete, go to input phase
+          runInputPhase();
+        }
+      }, displayTime);
+    } else {
+      // Single number mode (original behavior)
+      const number = generateRandomNumber(state.settings.digits, state.settings.numberRanges);
+      setCurrentNumber(number);
+
+      logger.debug(CONTEXT, `Display phase - showing number: ${number}`);
+
+      // Show message
+      messageArea.textContent = t('game.watch');
+      messageArea.className = 'game-message';
+
+      // Show abacus with number
+      abacusContainer.style.display = 'flex';
+      abacusInstance.setValue(number);
+
+      // Display for configured time
+      const displayTime = state.settings.displayTime * 1000;
+
+      phaseTimeout = setTimeout(() => {
+        runInputPhase();
+      }, displayTime);
+    }
   }
   
   function runInputPhase() {
     currentPhase = PHASES.INPUT;
-    
+
     logger.debug(CONTEXT, 'Input phase');
-    
+
     // Hide abacus
     abacusContainer.style.display = 'none';
-    
-    // Show input
-    messageArea.textContent = t('game.answerPrompt');
-    messageArea.className = 'game-message';
+
+    // Clear input zone
+    inputZone.innerHTML = '';
+
+    if (isSeriesMode) {
+      // Series mode: create multiple inputs
+      messageArea.textContent = t('game.answerPromptSeries');
+      messageArea.className = 'game-message';
+
+      const inputsContainer = document.createElement('div');
+      inputsContainer.className = 'series-inputs';
+
+      for (let i = 0; i < currentSeries.length; i++) {
+        const inputWrapper = document.createElement('div');
+        inputWrapper.className = 'series-input-wrapper';
+
+        const inputLabel = document.createElement('label');
+        inputLabel.className = 'series-input-label';
+        inputLabel.textContent = t('game.answerPlaceholderSeries').replace('{index}', i + 1);
+
+        const input = document.createElement('input');
+        input.type = 'number';
+        input.className = 'form-group__input series-input';
+        input.dataset.index = i;
+
+        // Submit on Enter in last field
+        if (i === currentSeries.length - 1) {
+          input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+              handleSubmit();
+            }
+          });
+        } else {
+          // Move to next field on Enter
+          input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+              e.preventDefault();
+              const nextInput = inputsContainer.querySelector(`input[data-index="${i + 1}"]`);
+              if (nextInput) nextInput.focus();
+            }
+          });
+        }
+
+        inputWrapper.append(inputLabel, input);
+        inputsContainer.appendChild(inputWrapper);
+      }
+
+      const submitBtn = document.createElement('button');
+      submitBtn.className = 'btn btn--primary';
+      submitBtn.textContent = t('game.submitButton');
+      submitBtn.addEventListener('click', handleSubmit);
+
+      inputZone.append(inputsContainer, submitBtn);
+
+      // Focus first input
+      const firstInput = inputsContainer.querySelector('input[data-index="0"]');
+      if (firstInput) firstInput.focus();
+    } else {
+      // Single number mode
+      messageArea.textContent = t('game.answerPrompt');
+      messageArea.className = 'game-message';
+
+      const input = document.createElement('input');
+      input.type = 'number';
+      input.className = 'form-group__input';
+      input.placeholder = t('game.answerPlaceholder');
+      input.id = 'single-input';
+
+      const submitBtn = document.createElement('button');
+      submitBtn.className = 'btn btn--primary';
+      submitBtn.textContent = t('game.submitButton');
+      submitBtn.addEventListener('click', handleSubmit);
+
+      // Submit on Enter
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          handleSubmit();
+        }
+      });
+
+      inputZone.append(input, submitBtn);
+
+      // Focus input
+      input.focus();
+    }
+
     inputZone.style.display = 'flex';
-    
-    // Focus input
-    input.focus();
   }
   
   function handleSubmit() {
     if (currentPhase !== PHASES.INPUT) return;
-    
-    const userInput = input.value.trim();
-    const correctNumber = state.gameState.currentNumber;
-    
-    // Validate answer
-    const validation = validateAnswer(userInput, correctNumber);
-    
-    if (!validation.isValid) {
-      // Show error
-      const errorKey = validation.error === 'empty' ? 'errors.emptyAnswer' : 'errors.invalidAnswer';
-      toast.error(t(errorKey));
-      return;
+
+    if (isSeriesMode) {
+      // Series mode: collect all answers
+      const inputs = inputZone.querySelectorAll('.series-input');
+      const userAnswers = [];
+      let hasError = false;
+
+      // Collect and validate all inputs
+      inputs.forEach((input, index) => {
+        const value = input.value.trim();
+        if (value === '') {
+          hasError = true;
+          toast.error(t('errors.emptyAnswer'));
+          input.focus();
+          return;
+        }
+
+        const userNumber = parseInt(value, 10);
+        if (isNaN(userNumber)) {
+          hasError = true;
+          toast.error(t('errors.invalidAnswer'));
+          input.focus();
+          return;
+        }
+
+        userAnswers.push(userNumber);
+      });
+
+      if (hasError) return;
+
+      // Check correctness of each answer
+      let correctCount = 0;
+      const results = userAnswers.map((answer, index) => {
+        const isCorrect = answer === currentSeries[index];
+        if (isCorrect) correctCount++;
+        return {
+          index,
+          userAnswer: answer,
+          correctAnswer: currentSeries[index],
+          isCorrect
+        };
+      });
+
+      // Record answers
+      recordSeriesAnswers(userAnswers, correctCount);
+
+      logger.info(CONTEXT, `Series answers: ${correctCount}/${currentSeries.length} correct`, results);
+
+      // Show feedback
+      runFeedbackPhaseSeries(results, correctCount);
+    } else {
+      // Single number mode (original behavior)
+      const input = inputZone.querySelector('#single-input');
+      const userInput = input.value.trim();
+      const correctNumber = state.gameState.currentNumber;
+
+      // Validate answer
+      const validation = validateAnswer(userInput, correctNumber);
+
+      if (!validation.isValid) {
+        // Show error
+        const errorKey = validation.error === 'empty' ? 'errors.emptyAnswer' : 'errors.invalidAnswer';
+        toast.error(t(errorKey));
+        return;
+      }
+
+      // Record answer
+      recordAnswer(validation.userNumber, validation.isCorrect);
+
+      logger.info(CONTEXT, `Answer: ${validation.userNumber}, Correct: ${correctNumber}, Result: ${validation.isCorrect}`);
+
+      // Show feedback
+      runFeedbackPhase(validation.isCorrect, correctNumber);
     }
-    
-    // Record answer
-    recordAnswer(validation.userNumber, validation.isCorrect);
-    
-    logger.info(CONTEXT, `Answer: ${validation.userNumber}, Correct: ${correctNumber}, Result: ${validation.isCorrect}`);
-    
-    // Show feedback
-    runFeedbackPhase(validation.isCorrect, correctNumber);
   }
   
   function runFeedbackPhase(isCorrect, correctNumber) {
@@ -286,10 +452,93 @@ export function renderGame(container, context) {
     }
   }
   
+  function runFeedbackPhaseSeries(results, correctCount) {
+    currentPhase = PHASES.FEEDBACK;
+
+    // Hide input
+    inputZone.style.display = 'none';
+
+    // Show feedback
+    feedbackArea.style.display = 'block';
+    feedbackArea.innerHTML = '';
+
+    // Update status bar
+    updateStatusBar(statusBar, t, state);
+
+    const totalCount = results.length;
+    const allCorrect = correctCount === totalCount;
+
+    if (allCorrect) {
+      feedbackArea.className = 'feedback feedback--correct';
+      feedbackArea.textContent = t('game.correct');
+      playSound('correct');
+
+      // Auto-next after 2 seconds
+      phaseTimeout = setTimeout(() => {
+        nextRoundOrFinish();
+      }, 2000);
+    } else {
+      feedbackArea.className = 'feedback feedback--incorrect';
+
+      // Result summary
+      const summaryText = document.createElement('div');
+      summaryText.className = 'feedback__text';
+      summaryText.textContent = t('game.seriesResult')
+        .replace('{correct}', correctCount)
+        .replace('{total}', totalCount);
+
+      // Show correct answers
+      const answersTitle = document.createElement('div');
+      answersTitle.className = 'feedback__answers-title';
+      answersTitle.textContent = t('game.correctWereSeries');
+
+      const answersList = document.createElement('div');
+      answersList.className = 'feedback__answers-list';
+
+      results.forEach((result, index) => {
+        const answerItem = document.createElement('div');
+        answerItem.className = result.isCorrect
+          ? 'feedback__answer-item feedback__answer-item--correct'
+          : 'feedback__answer-item feedback__answer-item--incorrect';
+
+        answerItem.innerHTML = `
+          <span class="feedback__answer-number">${index + 1}.</span>
+          <span class="feedback__answer-value">${result.correctAnswer}</span>
+          ${!result.isCorrect ? `<span class="feedback__answer-user">(${result.userAnswer})</span>` : ''}
+        `;
+
+        answersList.appendChild(answerItem);
+      });
+
+      // Buttons container
+      const buttonsContainer = document.createElement('div');
+      buttonsContainer.className = 'feedback__buttons';
+
+      // Skip button (go to next round)
+      const skipBtn = document.createElement('button');
+      skipBtn.className = 'btn btn--skip';
+      skipBtn.textContent = t('game.skipButton');
+      skipBtn.addEventListener('click', () => {
+        if (showAgainTimeout) clearTimeout(showAgainTimeout);
+        abacusContainer.style.display = 'none';
+        nextRoundOrFinish();
+      });
+
+      buttonsContainer.appendChild(skipBtn);
+
+      feedbackArea.append(summaryText, answersTitle, answersList, buttonsContainer);
+
+      playSound('wrong');
+    }
+  }
+
   function nextRoundOrFinish() {
     // Скрыть абакус если был показан
     abacusContainer.style.display = 'none';
-    
+
+    // Reset series index for next round
+    currentSeriesIndex = 0;
+
     if (isGameFinished()) {
       endGame();
       logger.info(CONTEXT, 'Game finished');

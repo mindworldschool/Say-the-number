@@ -12,23 +12,31 @@ const STORAGE_KEY = 'number_recognition_state';
 const defaultState = {
   language: 'ua',
   route: 'settings',
-  
+
   // Settings
   settings: {
     digits: 3,           // Разрядность: 1-9
     displayTime: 1.0,    // Время показа: 0.1-3.0 секунд
-    totalExamples: 10    // Количество примеров: 5, 10, 20, 50, 100
+    totalExamples: 10,   // Количество примеров: 5, 10, 20, 50, 100
+    seriesCount: 1,      // Количество чисел в серии: 1-20
+    numberRanges: {      // Диапазоны чисел для генерации
+      range10_19: false,    // 10-19
+      round10_90: false,    // 10, 20, 30, 40, 50, 60, 70, 80, 90
+      round100_900: false   // 100, 200, 300, 400, 500, 600, 700, 800, 900
+    }
   },
-  
+
   // Game state
   gameState: {
-    currentExample: 0,      // Текущий пример (0-based)
-    correctAnswers: 0,      // Количество правильных ответов
-    incorrectAnswers: 0,    // Количество неправильных ответов
-    currentNumber: null,    // Текущее показываемое число
-    userAnswer: null,       // Ответ пользователя
-    startTime: null,        // Время начала тренировки
-    endTime: null           // Время окончания тренировки
+    currentExample: 0,        // Текущий пример (0-based)
+    correctAnswers: 0,        // Количество правильных ответов
+    incorrectAnswers: 0,      // Количество неправильных ответов
+    currentNumber: null,      // Текущее показываемое число (для одиночного режима)
+    currentSeries: [],        // Текущая серия чисел (для режима серий)
+    userAnswers: [],          // Ответы пользователя (для режима серий)
+    userAnswer: null,         // Ответ пользователя (для одиночного режима)
+    startTime: null,          // Время начала тренировки
+    endTime: null             // Время окончания тренировки
   }
 };
 
@@ -47,7 +55,14 @@ function loadState() {
       state = {
         ...defaultState,
         ...parsed,
-        settings: { ...defaultState.settings, ...parsed.settings },
+        settings: {
+          ...defaultState.settings,
+          ...parsed.settings,
+          numberRanges: {
+            ...defaultState.settings.numberRanges,
+            ...(parsed.settings?.numberRanges || {})
+          }
+        },
         gameState: { ...defaultState.gameState } // Don't restore game state
       };
       logger.debug(CONTEXT, 'State loaded from localStorage:', state);
@@ -115,11 +130,39 @@ export function startGame() {
     correctAnswers: 0,
     incorrectAnswers: 0,
     currentNumber: null,
+    currentSeries: [],
+    userAnswers: [],
     userAnswer: null,
     startTime: Date.now(),
     endTime: null
   };
   logger.info(CONTEXT, 'Game started');
+}
+
+/**
+ * Set current series of numbers
+ * @param {number[]} series - Array of numbers to display
+ */
+export function setCurrentSeries(series) {
+  state.gameState.currentSeries = series;
+  logger.debug(CONTEXT, `Current series set:`, series);
+}
+
+/**
+ * Record series answers
+ * @param {number[]} answers - User's answers
+ * @param {number} correctCount - Number of correct answers
+ */
+export function recordSeriesAnswers(answers, correctCount) {
+  state.gameState.userAnswers = answers;
+
+  const incorrectCount = answers.length - correctCount;
+
+  state.gameState.correctAnswers += correctCount;
+  state.gameState.incorrectAnswers += incorrectCount;
+  state.gameState.currentExample++;
+
+  logger.debug(CONTEXT, `Series answers recorded: ${correctCount} correct, ${incorrectCount} incorrect`);
 }
 
 /**
