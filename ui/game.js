@@ -14,7 +14,7 @@ import {
   endGame
 } from '../core/state.js';
 import { Abacus } from '../components/Abacus.js';
-import { generateRandomNumber, generateNumberArray } from '../utils/numberGenerator.js';
+import { generateRandomNumber, generateNumberArray, getAbacusDigits } from '../utils/numberGenerator.js';
 import { validateAnswer } from '../utils/validation.js';
 import toast from '../components/Toast.js';
 import { playSound } from '../utils/soundManager.js';
@@ -97,9 +97,12 @@ export function renderGame(container, context) {
   gameZone.append(messageArea, abacusContainer, inputZone, feedbackArea, exitBtn);
   screen.append(statusBar, gameZone);
   container.appendChild(screen);
-  
-  // Initialize abacus
-  abacusInstance = new Abacus(abacusContainer, state.settings.digits);
+
+  // Initialize abacus with correct number of digits
+  const abacusDigits = getAbacusDigits(state.settings.digits, state.settings.numberRanges);
+  abacusInstance = new Abacus(abacusContainer, abacusDigits);
+
+  logger.debug(CONTEXT, `Abacus initialized with ${abacusDigits} digits (settings: ${state.settings.digits}, ranges:`, state.settings.numberRanges, ')');
   
   // Start first round
   startRound();
