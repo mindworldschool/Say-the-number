@@ -9,8 +9,8 @@ const CONTEXT = 'NumberGenerator';
 
 /**
  * Generate a random number with specified settings
- * @param {number} digits - Number of digits (1-9)
- * @param {Object} numberRanges - Additional number ranges to include
+ * @param {number} digits - Number of digits (1-9) - used only if no special ranges are active
+ * @param {Object} numberRanges - Special number ranges (if any active, standard range is ignored)
  * @returns {number} Random number
  */
 export function generateRandomNumber(digits, numberRanges = {}) {
@@ -22,13 +22,10 @@ export function generateRandomNumber(digits, numberRanges = {}) {
   // Collect all available number pools
   const pools = [];
 
-  // Standard digit range pool
-  pools.push({
-    type: 'standard',
-    numbers: getStandardRange(digits)
-  });
+  // Check if any special ranges are active
+  const hasSpecialRanges = numberRanges.range10_19 || numberRanges.round10_90 || numberRanges.round100_900;
 
-  // Additional ranges
+  // Only add special ranges if they are active
   if (numberRanges.range10_19) {
     pools.push({
       type: 'range10_19',
@@ -47,6 +44,14 @@ export function generateRandomNumber(digits, numberRanges = {}) {
     pools.push({
       type: 'round100_900',
       numbers: [100, 200, 300, 400, 500, 600, 700, 800, 900]
+    });
+  }
+
+  // If no special ranges are active, use standard digit range
+  if (!hasSpecialRanges) {
+    pools.push({
+      type: 'standard',
+      numbers: getStandardRange(digits)
     });
   }
 
@@ -124,9 +129,38 @@ export function getRange(digits) {
   if (digits === 1) {
     return { min: 0, max: 9 };
   }
-  
+
   return {
     min: Math.pow(10, digits - 1),
     max: Math.pow(10, digits) - 1
   };
+}
+
+/**
+ * Determine the number of digits needed for abacus based on active ranges
+ * @param {number} defaultDigits - Default number of digits from settings
+ * @param {Object} numberRanges - Active number ranges
+ * @returns {number} Number of digits for abacus (1-9)
+ */
+export function getAbacusDigits(defaultDigits, numberRanges = {}) {
+  // Check if any special ranges are active
+  const hasSpecialRanges = numberRanges.range10_19 || numberRanges.round10_90 || numberRanges.round100_900;
+
+  if (!hasSpecialRanges) {
+    // No special ranges - use default
+    return defaultDigits;
+  }
+
+  // Determine max digits needed based on active ranges
+  let maxDigits = 1;
+
+  if (numberRanges.range10_19 || numberRanges.round10_90) {
+    maxDigits = Math.max(maxDigits, 2); // 10-99 need 2 digits
+  }
+
+  if (numberRanges.round100_900) {
+    maxDigits = Math.max(maxDigits, 3); // 100-999 need 3 digits
+  }
+
+  return maxDigits;
 }
