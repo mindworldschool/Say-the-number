@@ -56,17 +56,20 @@
 
         // 1. Проверяем параметр lang в URL
         if (!SUPPORTED_LANGS.includes(lang)) {
-          // 2. Если нет — пробуем определить по referrer
+          // 2. Если нет — пробуем определить по referrer (откуда пришел пользователь)
           const referrer = document.referrer;
+          console.log("[Say the Number] Referrer:", referrer);
+
           if (referrer) {
-            if (referrer.includes("/en/")) {
+            // Проверяем языковые версии сайта по пути
+            if (referrer.includes("/en/") || referrer.endsWith("/en")) {
               lang = "en";
-            } else if (referrer.includes("/ru/")) {
+            } else if (referrer.includes("/ru/") || referrer.endsWith("/ru")) {
               lang = "ru";
-            } else if (referrer.includes("/es/")) {
+            } else if (referrer.includes("/es/") || referrer.endsWith("/es")) {
               lang = "es";
-            } else if (referrer.includes("mindworldschool.com")) {
-              // Украинская версия на основном домене без префикса
+            } else if (referrer.includes("mindworldschool.com") || referrer.includes("mindworldschool.github.io")) {
+              // Украинская версия на основном домене без языкового префикса
               lang = "ua";
             }
           }
@@ -77,19 +80,33 @@
             if (SUPPORTED_LANGS.includes(saved)) {
               lang = saved;
             } else {
-              // 4. Язык по умолчанию
-              lang = "ua";
+              // 4. Язык браузера
+              const browserLang = (navigator.language || "").toLowerCase();
+              if (browserLang.startsWith("uk") || browserLang.startsWith("ua")) {
+                lang = "ua";
+              } else if (browserLang.startsWith("en")) {
+                lang = "en";
+              } else if (browserLang.startsWith("ru")) {
+                lang = "ru";
+              } else if (browserLang.startsWith("es")) {
+                lang = "es";
+              } else {
+                // 5. Язык по умолчанию
+                lang = "ua";
+              }
             }
           }
         }
 
-        // 5. Сохраняем язык
+        console.log("[Say the Number] Selected language:", lang);
+
+        // 6. Сохраняем язык
         localStorage.setItem("mws_lang", lang);
 
-        // 6. Передаём язык в main.js
+        // 7. Передаём язык в main.js
         window.APP_LANG = lang;
 
-        // 7. Обновляем lang в <html>
+        // 8. Обновляем lang в <html>
         const langMap = { ua: "uk", en: "en", ru: "ru", es: "es" };
         document.documentElement.lang = langMap[lang] || "uk";
       })();
