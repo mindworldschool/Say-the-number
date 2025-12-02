@@ -4,8 +4,8 @@
  */
 
 import { logger } from './core/logger.js';
-import { initI18n, t, setLanguage, onLanguageChange, getAvailableLanguages } from './core/i18n.js';
-import { state, setRoute } from './core/state.js';
+import { initI18n, t, setLanguage, onLanguageChange, getAvailableLanguages, getCurrentLanguage } from './core/i18n.js';
+import { state, setRoute, setLanguagePreference } from './core/state.js';
 import { renderSettings } from './ui/settings.js';
 import { renderGame } from './ui/game.js';
 import { renderResults } from './ui/results.js';
@@ -110,6 +110,9 @@ function initLanguageSwitcher() {
 
   // Update active button on language change
   onLanguageChange((newLang) => {
+    // Synchronize state with language change
+    setLanguagePreference(newLang);
+
     // Update buttons
     switcher.querySelectorAll('.language-btn').forEach(btn => {
       if (btn.dataset.lang === newLang) {
@@ -144,7 +147,11 @@ async function init() {
     const lang = window.APP_LANG || 'ua';
     await initI18n(lang);
 
-    logger.info(CONTEXT, `Language initialized: ${lang}`);
+    // Synchronize state with current language
+    const currentLang = getCurrentLanguage();
+    setLanguagePreference(currentLang);
+
+    logger.info(CONTEXT, `Language initialized: ${currentLang}`);
 
     // Update header text
     const title = document.getElementById('appTitle');
