@@ -1,6 +1,67 @@
 import { dictionaries, LANG_CODES } from "../i18n/dictionaries.js";
 
-let currentLanguage = "ua";
+import { dictionaries, LANG_CODES } from "../i18n/dictionaries.js";
+
+// Определяем язык один раз при загрузке страницы
+let currentLanguage = (function detectInitialLanguage() {
+  let lang = "";
+
+  // 1) Пробуем взять из URL-параметра ?lang=
+  try {
+    const params = new URLSearchParams(window.location.search);
+    lang = (params.get("lang") || "").toLowerCase();
+  } catch (e) {
+    lang = "";
+  }
+
+  const allowed = LANG_CODES || ["ua", "en", "ru", "es"];
+
+  if (!allowed.includes(lang)) {
+    // 2) Если в URL нет или неверный — пробуем взять из localStorage
+    try {
+      const stored = (localStorage.getItem("sayTheNumberLang") || "").toLowerCase();
+      if (allowed.includes(stored)) {
+        lang = stored;
+      }
+    } catch (e) {
+      // игнорируем
+    }
+  }
+
+  if (!lang) {
+    // 3) Если все ещё пусто — смотрим <html lang="">
+    const htmlLang = (document.documentElement.lang || "").toLowerCase();
+    if (htmlLang.includes("uk") || htmlLang.includes("ua")) lang = "ua";
+    else if (htmlLang.includes("en")) lang = "en";
+    else if (htmlLang.includes("ru")) lang = "ru";
+    else if (htmlLang.includes("es")) lang = "es";
+  }
+
+  if (!lang) {
+    // 4) Если и тут ничего — язык браузера
+    const browserLang = (navigator.language || navigator.userLanguage || "").toLowerCase();
+    if (browserLang.startsWith("uk") || browserLang.startsWith("ua")) lang = "ua";
+    else if (browserLang.startsWith("en")) lang = "en";
+    else if (browserLang.startsWith("ru")) lang = "ru";
+    else if (browserLang.startsWith("es")) lang = "es";
+  }
+
+  // 5) Финальный fallback — украинский
+  if (!lang || !allowed.includes(lang)) {
+    lang = "ua";
+  }
+
+  // 6) Сохраняем выбор, чтобы при следующем запуске игра помнила язык
+  try {
+    localStorage.setItem("sayTheNumberLang", lang);
+  } catch (e) {
+    // если заблокирован localStorage — просто игнорируем
+  }
+
+  return lang;
+})();
+
+// слушатели смены языка
 const listeners = new Set();
 
 function getFromDictionary(dict, path) {
