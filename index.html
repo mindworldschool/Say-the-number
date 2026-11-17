@@ -20,108 +20,35 @@
     <!-- Иконка -->
     <link rel="icon" type="image/png" href="./assets/logo.png" />
 
-    <!-- Шрифты -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600&family=Montserrat:wght@400;600&display=swap"
-      rel="stylesheet"
-    />
-
-    <!-- Стили -->
-    <link rel="stylesheet" href="./styles.css" />
+    <!-- Общая оболочка публичных тренажёров: шапка, языки, шрифты, цвета -->
+    <link rel="stylesheet" href="/trainer-shell/shell.v1.css" />
+    <link rel="stylesheet" href="./styles.css?v=2" />
+    <script src="/trainer-shell/shell.v1.js"></script>
   </head>
 
   <body>
-    <header class="app-header">
-      <div class="app-header__brand">
-        <img
-          src="./assets/logo.png"
-          alt="MindWorld School logo"
-          class="app-header__logo"
-        />
-
-        <div class="app-header__titles">
-          <h1 class="app-header__title">
-            <span class="title-main" id="appTitle">Say the Number</span>
-          </h1>
-          <h2 id="appTagline" class="app-header__tagline">
-            Розпізнавання чисел на абакусі
-          </h2>
-        </div>
-      </div>
-
-      <!-- Переключатель языков -->
-      <div id="languageSwitcher" class="app-header__languages"></div>
-    </header>
+    <!-- Сюда оболочка вставит шапку (лого, название, UA / EN / RU / ES) -->
+    <div id="mw-header"></div>
 
     <main id="app" class="app-main" role="main"></main>
 
-    <footer id="appFooter" class="app-footer">MindWorld School © 2025</footer>
+    <footer id="appFooter" class="app-footer">MindWorld School © 2026</footer>
 
-    <!-- Детектор языка -->
+    <!-- Шапка и язык — из общей оболочки: ?lang= → сохранённый выбор → браузер → украинский.
+         Выбранный язык передаём в main.js через window.APP_LANG, смену — событием mw:langchange -->
     <script>
-      (function () {
-        const SUPPORTED_LANGS = ["ua", "en", "ru", "es"];
-        const params = new URLSearchParams(window.location.search);
-        let lang = params.get("lang");
-
-        // 1. Проверяем параметр lang в URL
-        if (!SUPPORTED_LANGS.includes(lang)) {
-          // 2. Если нет — пробуем определить по referrer (откуда пришел пользователь)
-          const referrer = document.referrer;
-          console.log("[Say the Number] Referrer:", referrer);
-
-          if (referrer) {
-            // Проверяем языковые версии сайта по пути
-            if (referrer.includes("/en/") || referrer.endsWith("/en")) {
-              lang = "en";
-            } else if (referrer.includes("/ru/") || referrer.endsWith("/ru")) {
-              lang = "ru";
-            } else if (referrer.includes("/es/") || referrer.endsWith("/es")) {
-              lang = "es";
-            } else if (referrer.includes("mindworldschool.com") || referrer.includes("mindworldschool.github.io")) {
-              // Украинская версия на основном домене без языкового префикса
-              lang = "ua";
-            }
-          }
-
-          // 3. Если не определили — пробуем взять из localStorage
-          if (!SUPPORTED_LANGS.includes(lang)) {
-            const saved = localStorage.getItem("mws_lang");
-            if (SUPPORTED_LANGS.includes(saved)) {
-              lang = saved;
-            } else {
-              // 4. Язык браузера
-              const browserLang = (navigator.language || "").toLowerCase();
-              if (browserLang.startsWith("uk") || browserLang.startsWith("ua")) {
-                lang = "ua";
-              } else if (browserLang.startsWith("en")) {
-                lang = "en";
-              } else if (browserLang.startsWith("ru")) {
-                lang = "ru";
-              } else if (browserLang.startsWith("es")) {
-                lang = "es";
-              } else {
-                // 5. Язык по умолчанию
-                lang = "ua";
-              }
-            }
-          }
-        }
-
-        console.log("[Say the Number] Selected language:", lang);
-
-        // 6. Сохраняем язык
-        localStorage.setItem("mws_lang", lang);
-
-        // 7. Передаём язык в main.js
-        window.APP_LANG = lang;
-
-        // 8. Обновляем lang в <html>
-        const langMap = { ua: "uk", en: "en", ru: "ru", es: "es" };
-        document.documentElement.lang = langMap[lang] || "uk";
-      })();
+      MWShell.init({
+        title: "Say the Number",
+        tagline: {
+          ua: "Розпізнавання чисел на абакусі",
+          en: "Number Recognition on Abacus",
+          ru: "Распознавание чисел на абакусе",
+          es: "Reconocimiento de números en el ábaco"
+        },
+        docTitle: "Say the Number — MindWorld School",
+        ukrainianCode: "ua",
+        onLangChange: function (lang) { window.APP_LANG = lang; }
+      });
     </script>
 
     <!-- Основной JS -->
