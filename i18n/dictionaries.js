@@ -6,7 +6,7 @@ export const dictionaries = {
       "titleMain": "Say the Number",
       "tagline": "Розпізнавання чисел на абакусі"
     },
-    "footer": "MindWorld School © 2025",
+    "footer": "MindWorld School © 2026",
     
     "settings": {
       "title": "Налаштування тренування",
@@ -129,7 +129,7 @@ export const dictionaries = {
       "titleMain": "Say the Number",
       "tagline": "Number Recognition on Abacus"
     },
-    "footer": "MindWorld School © 2025",
+    "footer": "MindWorld School © 2026",
     
     "settings": {
       "title": "Training Settings",
@@ -252,7 +252,7 @@ export const dictionaries = {
       "titleMain": "Say the Number",
       "tagline": "Распознавание чисел на абакусе"
     },
-    "footer": "MindWorld School © 2025",
+    "footer": "MindWorld School © 2026",
     
     "settings": {
       "title": "Настройки тренировки",
@@ -375,7 +375,7 @@ export const dictionaries = {
       "titleMain": "Say the Number",
       "tagline": "Reconocimiento de números en el ábaco"
     },
-    "footer": "MindWorld School © 2025",
+    "footer": "MindWorld School © 2026",
     
     "settings": {
       "title": "Configuración del entrenamiento",

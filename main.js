@@ -83,52 +83,20 @@ function render() {
 }
 
 /**
- * Initialize language switcher
+ * Смена языка из шапки общей оболочки (trainer-shell)
  */
 function initLanguageSwitcher() {
-  const switcher = document.getElementById('languageSwitcher');
-  if (!switcher) return;
-
-  const languages = getAvailableLanguages();
-
-  languages.forEach(({ code, label }) => {
-    const button = document.createElement('button');
-    button.className = 'language-btn';
-    button.textContent = label;
-    button.dataset.lang = code;
-
-    if (code === state.language) {
-      button.classList.add('language-btn--active');
-    }
-
-    button.addEventListener('click', () => {
-      setLanguage(code);
-    });
-
-    switcher.appendChild(button);
+  // Кнопки UA / EN / RU / ES рисует оболочка и сообщает о смене событием
+  document.addEventListener('mw:langchange', (e) => {
+    const code = e.detail && e.detail.lang;
+    if (code) setLanguage(code);
   });
 
-  // Update active button on language change
   onLanguageChange((newLang) => {
     // Synchronize state with language change
     setLanguagePreference(newLang);
 
-    // Update buttons
-    switcher.querySelectorAll('.language-btn').forEach(btn => {
-      if (btn.dataset.lang === newLang) {
-        btn.classList.add('language-btn--active');
-      } else {
-        btn.classList.remove('language-btn--active');
-      }
-    });
-
-    // Update header text
-    const title = document.getElementById('appTitle');
-    const tagline = document.getElementById('appTagline');
     const footer = document.getElementById('appFooter');
-
-    if (title) title.textContent = t('header.titleMain');
-    if (tagline) tagline.textContent = t('header.tagline');
     if (footer) footer.textContent = t('footer');
 
     // Re-render current screen
@@ -153,13 +121,8 @@ async function init() {
 
     logger.info(CONTEXT, `Language initialized: ${currentLang}`);
 
-    // Update header text
-    const title = document.getElementById('appTitle');
-    const tagline = document.getElementById('appTagline');
+    // Футер (шапку переводит оболочка)
     const footer = document.getElementById('appFooter');
-
-    if (title) title.textContent = t('header.titleMain');
-    if (tagline) tagline.textContent = t('header.tagline');
     if (footer) footer.textContent = t('footer');
 
     // Initialize language switcher
