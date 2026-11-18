@@ -72,7 +72,9 @@ export function renderGame(container, context) {
   // Abacus container
   const abacusContainer = document.createElement('div');
   abacusContainer.className = 'abacus-container';
-  abacusContainer.style.display = 'none';
+  // Абакус не убирается со страницы, а только становится невидимым:
+  // место под него занято всегда, и высота тренажёра (и фрейма на сайте) не прыгает
+  abacusContainer.style.visibility = 'hidden';
   
   // Input zone
   const inputZone = document.createElement('div');
@@ -94,7 +96,12 @@ export function renderGame(container, context) {
     navigate('settings');
   });
   
-  gameZone.append(messageArea, abacusContainer, inputZone, feedbackArea, exitBtn);
+  // Сцена: абакус и поле ответа занимают одно и то же место (одна ячейка сетки)
+  const stage = document.createElement('div');
+  stage.className = 'game-stage';
+  stage.append(abacusContainer, inputZone);
+
+  gameZone.append(messageArea, stage, feedbackArea, exitBtn);
   screen.append(statusBar, gameZone);
   container.appendChild(screen);
 
@@ -107,6 +114,26 @@ export function renderGame(container, context) {
   // Start first round
   startRound();
   
+  // === ПОКАЗ АБАКУСА ===
+
+  function showAbacus() {
+    abacusContainer.style.visibility = 'visible';
+  }
+
+  function hideAbacus() {
+    abacusContainer.style.visibility = 'hidden';
+  }
+
+  // Если сцена с абакусом не видна целиком — просим страницу прокрутить её в центр экрана.
+  // Во фрейме сайта это делает блок Tilda (сообщение от оболочки), без фрейма — сам браузер.
+  function revealStage() {
+    setTimeout(() => {
+      if (window.MWShell && typeof window.MWShell.reveal === 'function') {
+        window.MWShell.reveal(stage);
+      }
+    }, 150);
+  }
+
   // === GAME LOGIC ===
   
   function startRound() {
@@ -120,7 +147,7 @@ export function renderGame(container, context) {
     feedbackArea.innerHTML = '';
     inputZone.style.display = 'none';
     inputZone.innerHTML = '';
-    abacusContainer.style.display = 'none';
+    hideAbacus();
 
     // Start with prepare phase
     runPreparePhase();
@@ -130,6 +157,9 @@ export function renderGame(container, context) {
     currentPhase = PHASES.PREPARE;
     messageArea.textContent = t('game.prepare');
     messageArea.className = 'game-message game-message--prepare';
+
+    // За 2 секунды до показа — привести абакус в центр экрана
+    revealStage();
 
     logger.debug(CONTEXT, 'Prepare phase');
 
@@ -168,7 +198,7 @@ export function renderGame(container, context) {
       messageArea.className = 'game-message';
 
       // Show abacus with number
-      abacusContainer.style.display = 'flex';
+      showAbacus();
       abacusInstance.setValue(number);
 
       // Display for configured time
@@ -180,7 +210,7 @@ export function renderGame(container, context) {
         // If more numbers in series, show next one
         if (currentSeriesIndex < currentSeries.length) {
           // Hide abacus briefly between numbers
-          abacusContainer.style.display = 'none';
+          hideAbacus();
           phaseTimeout = setTimeout(() => {
             runDisplayPhase();
           }, 500); // 0.5s pause between numbers
@@ -201,7 +231,7 @@ export function renderGame(container, context) {
       messageArea.className = 'game-message';
 
       // Show abacus with number
-      abacusContainer.style.display = 'flex';
+      showAbacus();
       abacusInstance.setValue(number);
 
       // Display for configured time
@@ -219,7 +249,7 @@ export function renderGame(container, context) {
     logger.debug(CONTEXT, 'Input phase');
 
     // Hide abacus
-    abacusContainer.style.display = 'none';
+    hideAbacus();
 
     // Clear input zone
     inputZone.innerHTML = '';
@@ -427,7 +457,7 @@ export function renderGame(container, context) {
       showAgainBtn.textContent = t('game.showAgainButton');
       showAgainBtn.addEventListener('click', () => {
         // Показать абакус с правильным числом
-        abacusContainer.style.display = 'flex';
+        showAbacus();
         abacusInstance.setValue(correctNumber);
         showAgainBtn.disabled = true;
         showAgainBtn.textContent = t('game.watching');
@@ -435,7 +465,7 @@ export function renderGame(container, context) {
         // Скрыть через заданное время
         const displayTime = state.settings.displayTime * 1000;
         showAgainTimeout = setTimeout(() => {
-          abacusContainer.style.display = 'none';
+          hideAbacus();
           showAgainBtn.disabled = false;
           showAgainBtn.textContent = t('game.showAgainButton');
         }, displayTime);
@@ -447,7 +477,7 @@ export function renderGame(container, context) {
       skipBtn.textContent = t('game.skipButton');
       skipBtn.addEventListener('click', () => {
         if (showAgainTimeout) clearTimeout(showAgainTimeout);
-        abacusContainer.style.display = 'none';
+        hideAbacus();
         nextRoundOrFinish();
       });
       
@@ -526,7 +556,7 @@ export function renderGame(container, context) {
       skipBtn.textContent = t('game.skipButton');
       skipBtn.addEventListener('click', () => {
         if (showAgainTimeout) clearTimeout(showAgainTimeout);
-        abacusContainer.style.display = 'none';
+        hideAbacus();
         nextRoundOrFinish();
       });
 
@@ -540,7 +570,7 @@ export function renderGame(container, context) {
 
   function nextRoundOrFinish() {
     // Скрыть абакус если был показан
-    abacusContainer.style.display = 'none';
+    hideAbacus();
 
     if (isGameFinished()) {
       endGame();

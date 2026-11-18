@@ -735,3 +735,14 @@ body {
 html.mw-in-frame body.mw-shell {
   min-height: 0;
 }
+
+/* Сцена игры: абакус и поле ответа в одной ячейке — высота не меняется между фазами */
+.game-stage {
+  display: grid;
+  align-items: center;
+  justify-items: center;
+}
+.game-stage > * {
+  grid-area: 1 / 1;
+  width: 100%;
+}
